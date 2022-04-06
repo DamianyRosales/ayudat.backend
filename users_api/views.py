@@ -5,39 +5,73 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser, FileUploadParser
 from django.views.decorators.csrf import csrf_exempt
 from users_api.serializers import (
-    AdminSerializer, ProfessionalSerializer, Professional2Serializer
+    AdminSerializer, ProfessionalSerializer, Professional2Serializer, PatientSerializer,ModSerializer
     )
 from . import models
 
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from rest_framework.exceptions import ParseError
-from rest_auth.registration.views import RegisterView
-
-from rest_framework.response import Response
 
 import json
-from urllib.parse import parse_qs
-
 from rest_framework import status
+
+from rest_framework import response
 
 # Create your views here.
 
 
-@csrf_exempt
-def admin_list(request):
-    if request.method == 'GET':
+class admin_view(APIView):
+    
+    def get(self, request, format=None):
+
         admins = models.Admin.objects.all()
         serializer = AdminSerializer(admins, many=True)
+        
         return JsonResponse(serializer.data, safe=False)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = AdminSerializer(data=data)
+    
+    def put(self, request, pk=None):
+        data = request.data
+        data = json.loads(json.dumps(request.data))
+        
+        
+        for e in models.Patient.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+        admin = models.Admin.objects.get(email=email)
+
+        serializer = AdminSerializer(admin, data=data)
+
         if serializer.is_valid():
             serializer.save()
+
+            return JsonResponse(serializer.data)
+
+    def delete(self, request, format=None):
+        for e in models.Admin.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+                admin = models.Admin.objects.get(email=email)
+                admin.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+        
+        
+
+    def post(self,request):
+
+        data = json.loads(json.dumps(request.data))
+        
+        serializer = AdminSerializer(data=data)
+
+        if serializer.is_valid():
+            
+            serializer.save()    
+
             return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class professional_view(APIView):
@@ -45,171 +79,182 @@ class professional_view(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request, format=None):
+
         professionals = models.Professional.objects.all()
         serializer = ProfessionalSerializer(professionals, many=True)
-        
-        
         
         return JsonResponse(serializer.data, safe=False)
 
     
-    def put(self, request, pk, format=None):
-        professional= models.Professional.objects.get(pk=pk)
-        serializer = Professional2Serializer(professional, data=request)
+    def put(self, request, pk=None):
+        data = request.data
+        data = json.loads(json.dumps(request.data))
         
+        
+        for e in models.Professional.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+        professional = models.Professional.objects.get(email=email)
+
+        serializer = ProfessionalSerializer(professional, data=data)
+
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return JsonResponse(serializer.data)
+
+    def delete(self, request, format=None):
+        for e in models.Professional.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+                professional = models.Professional.objects.get(email=email)
+                professional.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+        
         
 
     def post(self,request):
-        request2={
+
+        request2 = {
             'document1':request.data.get('document1'),
             'document2':request.data.get('document2')
         }
 
         request.data.pop('document1')
         request.data.pop('document2')
-        
-        
 
         data = json.loads(json.dumps(request.data))
         
-
-        # data = json.dumps(parse_qs(request.data))
-        
-
         serializer = ProfessionalSerializer(data=data)
+
         if serializer.is_valid():
+            
             serializer.save()
             
             for e in models.Professional.objects.all():
+                
                 if e.email == request.data.get('email'):
                     pk = e.id
-                    print(pk)
-            self.put(request2,pk)
+                    
+            professional = models.Professional.objects.get(pk=pk)
+            serializer2 = Professional2Serializer(professional, data=request2)
+        
+            if serializer2.is_valid():
+                serializer2.save()
             
 
             return JsonResponse(serializer.data, status=201)
+
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class patient_view(APIView):
     
+    def get(self, request, format=None):
 
-    # def put(self,request, pk):
-    #     try:
-    #         professional = models.Professional.objects.get(pk=pk)
-    #     except models.Professional.DoesNotExist:
-    #         return HttpResponse(status=404)
+        patients = models.Patient.objects.all()
+        serializer = PatientSerializer(patients, many=True)
+        
+        return JsonResponse(serializer.data, safe=False)
 
-    #     data = JSONParser().parse(request)
-    #     serializer = ProfessionalSerializer(professional, data=data)
-
-    #     if serializer.is_valid():
-
-    #         serializer.save()
-
-    #         if 'document1' not in request.data:
-    #             raise ParseError("Missing document1")
-    #         elif 'document2' not in request.data:
-    #             raise ParseError("Missing document2")
-
-    #         f = request.data['document1']
-    #         f2 = request.data['document2']
-
-    #         models.Professional.document1.save(f.name, f, save=True)
-    #         models.Professional.document2.save(f2.name, f2, save=True)
-
-    #         return JsonResponse(serializer.data,status=status.HTTP_201_CREATED)
-    #         #return JsonResponse(serializer.data)
-    #     return JsonResponse(serializer.errors, status=400)
     
-    # def delete(self, request, pk):
-    #     try:
-    #         professional = models.Professional.objects.get(pk=pk)
-    #     except models.Professional.DoesNotExist:
-    #         return HttpResponse(status=404)
-    #     professional.delete()
+    def put(self, request, pk=None):
+        data = request.data
+        data = json.loads(json.dumps(request.data))
+        
+        
+        for e in models.Patient.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+        patient = models.Patient.objects.get(email=email)
+
+        serializer = PatientSerializer(patient, data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse(serializer.data)
+
+    def delete(self, request, format=None):
+        for e in models.Patient.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+                patient = models.Patient.objects.get(email=email)
+                patient.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+        
+        
+
+    def post(self,request):
+
+        data = json.loads(json.dumps(request.data))
+        
+        serializer = PatientSerializer(data=data)
+
+        if serializer.is_valid():
+            
+            serializer.save()    
+
+            return JsonResponse(serializer.data, status=201)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class mod_view(APIView):
     
+    def get(self, request, format=None):
+
+        patients = models.Mod.objects.all()
+        serializer = ModSerializer(patients, many=True)
+        
+        return JsonResponse(serializer.data, safe=False)
+
     
+    def put(self, request, pk=None):
+        data = request.data
+        data = json.loads(json.dumps(request.data))
+        
+        
+        for e in models.Mod.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
 
-# @csrf_exempt
-# def professional_list(request, pk):
+        mod = models.Mod.objects.get(email=email)
 
-#     parser_class = (FileUploadParser,)
+        serializer = ModSerializer(mod, data=data)
 
-#     try:
-#         professional = models.Professional.objects.get(pk=pk)
-#     except models.Professional.DoesNotExist:
-#         return HttpResponse(status=404)
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse(serializer.data)
+
+    def delete(self, request, format=None):
+        for e in models.Mod.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+                mod = models.Mod.objects.get(email=email)
+                mod.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+        
+        
+
+    def post(self,request):
+
+        data = json.loads(json.dumps(request.data))
+        
+        serializer = ModSerializer(data=data)
+
+        if serializer.is_valid():
+            
+            serializer.save()    
+
+            return JsonResponse(serializer.data, status=201)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#     if request.method == 'GET':
-#         professionals = models.Professional.objects.all()
-#         serializer = ProfessionalSerializer(professionals, many=True)
-#         return JsonResponse(serializer.data, safe=False)
-
-#     elif request.method == 'POST':
-#         data = JSONParser().parse(request)
-#         serializer = ProfessionalSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data, status=201)
-#         return JsonResponse(serializer.errors, status=400)
-    
-#     elif request.method == 'PUT':
-#         data = JSONParser().parse(request)
-#         serializer = ProfessionalSerializer(professional, data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             if 'document1' not in request.data:
-#                 raise ParseError("Missing document1")
-#             elif 'document2' not in request.data:
-#                 raise ParseError("Missing document2")
-
-#             f = request.data['document1']
-#             f2 = request.data['document2']
-
-#             models.Professional.document1.save(f.name, f, save=True)
-#             models.Professional.document2.save(f2.name, f2, save=True)
-
-#             return JsonResponse(serializer.data,status=status.HTTP_201_CREATED)
-#             #return JsonResponse(serializer.data)
-#         return JsonResponse(serializer.errors, status=400)
-    
-#     elif request.method == 'DELETE':
-#         professional.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-#         if 'document1' not in request.data:
-#             raise ParseError("Missing document1")
-#         elif 'document2' not in request.data:
-#             raise ParseError("Missing document2")
-
-#         f = request.data['document1']
-#         f2 = request.data['document2']
-
-#         models.Professional.document1.save(f.name, f, save=True)
-#         models.Professional.document2.save(f2.name, f2, save=True)
-
-#         return Response(status=status.HTTP_201_CREATED)
-
-# class MyUploadView(APIView):
-#     parser_class = (FileUploadParser,)
-
-#     def put(self, request, format=None):
-#         if 'document1' not in request.data:
-#             raise ParseError("Missing document1")
-#         elif 'document2' not in request.data:
-#             raise ParseError("Missing document2")
-
-#         f = request.data['document1']
-#         f2 = request.data['document2']
-
-#         models.Professional.document1.save(f.name, f, save=True)
-#         models.Professional.document2.save(f2.name, f2, save=True)
-
-#         return Response(status=status.HTTP_201_CREATED)
-    
-#     def delete(self, request, format=None):
-#         models.Professional.document1.delete(save=True)
-#         return Response(status=status.HTTP_204_NO_CONTENT)

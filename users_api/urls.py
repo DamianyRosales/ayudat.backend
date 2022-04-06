@@ -7,12 +7,9 @@ app_name = 'users_api'
 
 urlpatterns = [
     #Registration Urls
-    path('admin/', views.admin_list),
-    #path('professional/', views.professional_list),
-    #path('professional/', views.professional_view.as_view()),
     path('professional/', views.professional_view.as_view()),
-    # path('mod/', ModRegistrationView.as_view(), name='register-mod'),
-    # path('professional/', ProfessionalRegistrationView.as_view(), name='register-professional'),
-    # path('patient/', PatientRegistrationView.as_view(), name='register-patient'),
-    # #path('login/',Login.as_view(), name='login')
+    path('patient/', views.patient_view.as_view()),
+    path('mod/', views.mod_view.as_view()),
+    path('admin/', views.admin_view.as_view()),
+    # path('professional/<str:email>', views.professional_view.as_view()),
 ]
