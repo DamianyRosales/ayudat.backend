@@ -57,13 +57,13 @@ class Professional(UserBase):
                              max_length=17, blank=True,null=True)
     
     #FILE_DIR = 'documents/'+str(id)
-    FILE_DIR = 'documents/%Y/%m/%d/'
+    FILE_DIR = '%Y/%m/%d/'
     
     # Cedula profesional
-    document1 = models.FileField(db_column='EVIDENCE',upload_to=FILE_DIR, null=True, max_length=255, blank=True)
+    document1 = models.FileField(db_column='EVIDENCE',upload_to='a/', null=True, max_length=255, blank=True)
     
     # Professional Picture
-    document2 = models.FileField(db_column='PIC',upload_to=FILE_DIR,  max_length=255, null=True,blank=True)
+    document2 = models.FileField(db_column='PIC',upload_to='a/',  max_length=255, null=True,blank=True)
 
     schedule = models.CharField(db_column='SCHEDULE', max_length=255, null=True)
 

@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,10 +53,12 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'rest_framework',
     'rest_framework.authtoken',
+    'cloudinary',
+    'cloudinary_storage',
     'users_api',
 ]
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/ayudat/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 MIDDLEWARE = [
@@ -144,3 +152,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+cloudinary.config( 
+  cloud_name = "dh7dxkfwe", 
+  api_key = "246181219316647", 
+  api_secret = "VJvp0gOOO2qB-zObuhvmJZthFFk",
+  #secure = true
+)
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dh7dxkfwe',
+    'API_KEY': '246181219316647',
+    'API_SECRET':'VJvp0gOOO2qB-zObuhvmJZthFFk'
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
