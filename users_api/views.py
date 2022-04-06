@@ -27,7 +27,7 @@ class Login(ObtainAuthToken):
 
 class admin_view(APIView):
     
-    def get(self, request, format=None):
+    def get(self, request=None, format=None):
 
         admins = models.Admin.objects.all()
         serializer = AdminSerializer(admins, many=True)
@@ -84,7 +84,7 @@ class professional_view(APIView):
     
     parser_classes = (MultiPartParser, FormParser)
 
-    def get(self, request, format=None):
+    def get(self, request=None, format=None):
 
         professionals = models.Professional.objects.all()
         serializer = ProfessionalSerializer(professionals, many=True)
@@ -158,7 +158,7 @@ class professional_view(APIView):
 
 class patient_view(APIView):
     
-    def get(self, request, format=None):
+    def get(self, request=None, format=None):
 
         patients = models.Patient.objects.all()
         serializer = PatientSerializer(patients, many=True)
@@ -212,7 +212,7 @@ class patient_view(APIView):
 
 class mod_view(APIView):
     
-    def get(self, request, format=None):
+    def get(self, request=None, format=None):
 
         patients = models.Mod.objects.all()
         serializer = ModSerializer(patients, many=True)
