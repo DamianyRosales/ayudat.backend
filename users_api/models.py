@@ -7,8 +7,8 @@ class UserBase(AbstractBaseUser):
     
     email = models.EmailField(max_length=255, unique=True,null=True,blank=True)
 
-    fname = models.CharField(max_length=12, null=True,blank=True)
-    lname = models.CharField(max_length=12, null=True,blank=True)
+    fname = models.CharField(max_length=30, null=True,blank=True)
+    lname = models.CharField(max_length=30, null=True,blank=True)
     
     def get_full_name(self):
         # Get full name
