@@ -13,10 +13,10 @@ class UserBase(AbstractBaseUser):
     )
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES,default=0)
 
-    email = models.EmailField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255, unique=True,null=True,blank=True)
 
-    fname = models.CharField(max_length=12, null=True)
-    lname = models.CharField(max_length=12, null=True)
+    fname = models.CharField(max_length=12, null=True,blank=True)
+    lname = models.CharField(max_length=12, null=True,blank=True)
     
     def get_full_name(self):
         # Get full name
@@ -43,6 +43,7 @@ class Mod(UserBase):
     # objects = UserProfileManager()
 
 
+
 class Professional(UserBase):
     
     # CURP field 18 characters as max length
@@ -56,13 +57,13 @@ class Professional(UserBase):
                              max_length=17, blank=True,null=True)
     
     #FILE_DIR = 'documents/'+str(id)
-    FILE_DIR = 'documents'
-
+    FILE_DIR = 'documents/%Y/%m/%d/'
+    
     # Cedula profesional
-    document1 = models.FileField(db_column='EVIDENCE',upload_to=FILE_DIR, null=True)
+    document1 = models.FileField(db_column='EVIDENCE',upload_to=FILE_DIR, null=True, max_length=255, blank=True)
     
     # Professional Picture
-    document2 = models.FileField(db_column='PIC',upload_to=FILE_DIR, null=True)
+    document2 = models.FileField(db_column='PIC',upload_to=FILE_DIR,  max_length=255, null=True,blank=True)
 
     schedule = models.CharField(db_column='SCHEDULE', max_length=255, null=True)
 
@@ -70,6 +71,21 @@ class Professional(UserBase):
     
     # objects = UserProfileManager()
 
+# class Document(models.Model):
+
+#     FILE_DIR = 'documents/%Y/%m/%d/'
+
+#     professional = models.OneToOneField(Professional, on_delete=models.CASCADE)
+    
+
+#     # Cedula profesional
+#     document1 = models.FileField(db_column='EVIDENCE',upload_to=FILE_DIR, null=True, max_length=255, blank=True)
+    
+#     # Professional Picture
+#     document2 = models.FileField(db_column='PIC',upload_to=FILE_DIR, null=True, max_length=255, blank=True)
+
+#     def __str__(self):
+#         return "{0} - {1}".format(self.professional.fname, self.professional.lname)
 
 
 class Patient(UserBase):

@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from users_api.models import Admin, Professional, Patient, Mod
 
+# Serializers define the API representation.
+
+
 class AdminSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -11,8 +14,15 @@ class AdminSerializer(serializers.ModelSerializer):
 class ModSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Professional
+        model = Mod
         fields = '__all__'
+
+
+# class DocumentSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = Document
+#         fields = '__all__'
 
 
 class ProfessionalSerializer(serializers.ModelSerializer):
