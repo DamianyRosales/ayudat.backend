@@ -68,6 +68,9 @@ class Professional(UserBase):
     schedule = models.CharField(db_column='SCHEDULE', max_length=255, null=True)
 
     is_accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.fname + ' ' + self.lname + '('+self.email+')'
     
     # objects = UserProfileManager()
 

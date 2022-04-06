@@ -31,6 +31,12 @@ class ProfessionalSerializer(serializers.ModelSerializer):
         model = Professional
         fields = '__all__'
 
+class Professional2Serializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Professional
+        fields = ['document1','document2']
+
 
 class PatientSerializer(serializers.Serializer):
     
