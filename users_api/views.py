@@ -32,7 +32,7 @@ class admin_view(APIView):
         admins = models.Admin.objects.all()
         serializer = AdminSerializer(admins, many=True)
         
-        return JsonResponse(serializer.data, safe=False)
+        return JsonResponse(data=serializer.data, safe=False)
 
     
     def put(self, request, pk=None):
@@ -51,7 +51,7 @@ class admin_view(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return JsonResponse(serializer.data)
+            return JsonResponse(data=serializer.data)
 
     def delete(self, request, format=None):
         for e in models.Admin.objects.all():
@@ -74,9 +74,9 @@ class admin_view(APIView):
             
             serializer.save()    
 
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(data=serializer.data, status=201)
 
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -89,7 +89,7 @@ class professional_view(APIView):
         professionals = models.Professional.objects.all()
         serializer = ProfessionalSerializer(professionals, many=True)
         
-        return JsonResponse(serializer.data, safe=False)
+        return JsonResponse(data=serializer.data, safe=False)
 
     
     def put(self, request, pk=None):
@@ -108,7 +108,7 @@ class professional_view(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return JsonResponse(serializer.data)
+            return JsonResponse(data=serializer.data)
 
     def delete(self, request, format=None):
         for e in models.Professional.objects.all():
@@ -151,9 +151,9 @@ class professional_view(APIView):
                 serializer2.save()
             
 
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(data=serializer.data, status=201)
 
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class patient_view(APIView):
@@ -182,7 +182,7 @@ class patient_view(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return JsonResponse(serializer.data)
+            return JsonResponse(data=serializer.data)
 
     def delete(self, request, format=None):
         for e in models.Patient.objects.all():
@@ -205,9 +205,9 @@ class patient_view(APIView):
             
             serializer.save()    
 
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(data=serializer.data, status=201)
 
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class mod_view(APIView):
@@ -217,7 +217,7 @@ class mod_view(APIView):
         patients = models.Mod.objects.all()
         serializer = ModSerializer(patients, many=True)
         
-        return JsonResponse(serializer.data, safe=False)
+        return JsonResponse(data=serializer.data, safe=False)
 
     
     def put(self, request, pk=None):
@@ -236,7 +236,7 @@ class mod_view(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return JsonResponse(serializer.data)
+            return JsonResponse(data=serializer.data)
 
     def delete(self, request, format=None):
         for e in models.Mod.objects.all():
@@ -259,8 +259,8 @@ class mod_view(APIView):
             
             serializer.save()    
 
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(data=serializer.data, status=201)
 
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
