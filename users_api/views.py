@@ -1,23 +1,29 @@
-from pyexpat import model
-from webbrowser import get
-from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser, FileUploadParser
-from django.views.decorators.csrf import csrf_exempt
 from users_api.serializers import (
     AdminSerializer, ProfessionalSerializer, Professional2Serializer, PatientSerializer,ModSerializer
     )
 from . import models
-
 from rest_framework.views import APIView
-
 import json
 from rest_framework import status
-
 from rest_framework import response
 
+from rest_framework.authtoken.views import ObtainAuthToken
 # Create your views here.
 
+
+class Login(ObtainAuthToken):
+    
+    def post(self, request, *args, **kwargs):
+    
+        
+    
+        login_serializer = self.serializer_class(data=request.data, context={"request": request})
+        if login_serializer.is_valid():
+            print("Paso la validacion")
+        return response.Response({'mensaje':'Bonjour'}, status=status.HTTP_200_OK)
+        
 
 class admin_view(APIView):
     
@@ -126,7 +132,7 @@ class professional_view(APIView):
         request.data.pop('document2')
 
         data = json.loads(json.dumps(request.data))
-        
+
         serializer = ProfessionalSerializer(data=data)
 
         if serializer.is_valid():

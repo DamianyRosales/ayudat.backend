@@ -18,13 +18,6 @@ class ModSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class DocumentSerializer(serializers.ModelSerializer):
-    
-#     class Meta:
-#         model = Document
-#         fields = '__all__'
-
-
 class ProfessionalSerializer(serializers.ModelSerializer):
     
     class Meta:

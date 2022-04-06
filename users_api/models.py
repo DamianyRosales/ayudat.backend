@@ -3,7 +3,6 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser
 
 
-
 class UserBase(AbstractBaseUser):
     
     email = models.EmailField(max_length=255, unique=True,null=True,blank=True)
@@ -22,8 +21,10 @@ class UserBase(AbstractBaseUser):
     def __str__(self):
         return self.fname + ' ' + self.lname + '('+self.email+')'
 
+
 class Admin(UserBase):
     pass
+
 
 class Mod(UserBase):
 
@@ -32,9 +33,6 @@ class Mod(UserBase):
     phone_validator = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="")
     phone = models.CharField(db_column='PHONE',validators=[phone_validator], 
                              max_length=17, blank=True, null=True)
-
-    # objects = UserProfileManager()
-
 
 
 class Professional(UserBase):
@@ -50,13 +48,14 @@ class Professional(UserBase):
                              max_length=17, blank=True,null=True)
     
     #FILE_DIR = 'documents/'+str(id)
-    FILE_DIR = 'images/'
+    FILE_DIR = 'cedulas/'
+    FILE_DIR2 = 'profiles/'
     
     # Cedula profesional
     document1 = models.FileField(db_column='EVIDENCE',upload_to=FILE_DIR, null=True, max_length=255, blank=True)
     
     # Professional Picture
-    document2 = models.FileField(db_column='PIC',upload_to=FILE_DIR,  max_length=255, null=True,blank=True)
+    document2 = models.FileField(db_column='PIC',upload_to=FILE_DIR2,  max_length=255, null=True,blank=True)
 
     schedule = models.CharField(db_column='SCHEDULE', max_length=255, null=True)
 
@@ -65,24 +64,6 @@ class Professional(UserBase):
     def __str__(self):
         return self.fname + ' ' + self.lname + '('+self.email+')'
     
-    # objects = UserProfileManager()
-
-# class Document(models.Model):
-
-#     FILE_DIR = 'documents/%Y/%m/%d/'
-
-#     professional = models.OneToOneField(Professional, on_delete=models.CASCADE)
-    
-
-#     # Cedula profesional
-#     document1 = models.FileField(db_column='EVIDENCE',upload_to=FILE_DIR, null=True, max_length=255, blank=True)
-    
-#     # Professional Picture
-#     document2 = models.FileField(db_column='PIC',upload_to=FILE_DIR, null=True, max_length=255, blank=True)
-
-#     def __str__(self):
-#         return "{0} - {1}".format(self.professional.fname, self.professional.lname)
-
 
 class Patient(UserBase):
 
@@ -92,4 +73,3 @@ class Patient(UserBase):
 
     description = models.TextField(db_column='DESCRIPTION',max_length=500, null=True)
     
-    # objects = UserProfileManager()

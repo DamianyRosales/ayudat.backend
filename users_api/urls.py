@@ -1,7 +1,6 @@
 from django.urls import path, include
 from users_api import views
 
-
 app_name = 'users_api'
 
 
