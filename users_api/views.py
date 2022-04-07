@@ -10,6 +10,10 @@ from rest_framework import status
 from rest_framework import response
 
 from rest_framework.authtoken.views import ObtainAuthToken
+
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+
 # Create your views here.
 
 
@@ -77,7 +81,6 @@ class admin_view(APIView):
             return JsonResponse(data=serializer.data, status=201)
 
         return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class professional_view(APIView):
@@ -155,6 +158,13 @@ class professional_view(APIView):
 
         return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(["PUT"])
+def accept_professional(request):
+    data = json.loads(json.dumps(request.data))
+    professional = models.Professional.objects.get(email=data.get('email'))
+    professional.is_accepted = True
+    professional.save()
+    return JsonResponse(data='Accepted',status=status.HTTP_202_ACCEPTED, safe=False)
 
 class patient_view(APIView):
     
@@ -167,7 +177,6 @@ class patient_view(APIView):
 
     
     def put(self, request, pk=None):
-        data = request.data
         data = json.loads(json.dumps(request.data))
         
         

@@ -10,6 +10,8 @@ class UserBase(AbstractBaseUser):
     fname = models.CharField(max_length=30, null=True,blank=True)
     lname = models.CharField(max_length=30, null=True,blank=True)
     
+    USERNAME_FIELD = 'email'
+
     def get_full_name(self):
         # Get full name
         return self.fname + ' ' + self.lname
