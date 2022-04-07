@@ -16,13 +16,17 @@ from rest_framework.decorators import api_view
 
 from rest_framework import parsers, renderers
 from rest_framework.response import  Response
-from users_api.serializers import AuthCustomTokenSerializer
+from users_api.serializers import AuthCustomTokenSerializer, TokenObtainPairSerializer
 from rest_framework.authtoken.models import Token
 
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 
 # Create your views here.
+
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializer
 
 class ObtainAuthToken(APIView):
     throttle_classes = ()

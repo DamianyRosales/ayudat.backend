@@ -9,9 +9,13 @@ from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JwtTokenObtainPairSerializer
+from django.contrib.auth import get_user_model
 
 # Serializers define the API representation.
 
+class TokenObtainPairSerializer(JwtTokenObtainPairSerializer):
+    username_field = get_user_model().USERNAME_FIELD
 
 class AuthCustomTokenSerializer(serializers.Serializer):
     email_or_username = serializers.CharField()
