@@ -14,19 +14,52 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 
+from rest_framework import parsers, renderers
+from rest_framework.response import  Response
+from users_api.serializers import AuthCustomTokenSerializer
+from rest_framework.authtoken.models import Token
+
+
+
+
 # Create your views here.
 
+class ObtainAuthToken(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.JSONParser,
+    )
 
-class Login(ObtainAuthToken):
-    
-    def post(self, request, *args, **kwargs):
-    
-        
-    
-        login_serializer = self.serializer_class(data=request.data, context={"request": request})
-        if login_serializer.is_valid():
-            print("Paso la validacion")
-        return response.Response({'mensaje':'Bonjour'}, status=status.HTTP_200_OK)
+    renderer_classes = (renderers.JSONRenderer,)
+
+    def post(self, request):
+        serializer = AuthCustomTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+
+        content = {
+            'token': token.key,
+        }
+
+        return Response(content)
+
+# class CustomAuthToken(ObtainAuthToken):
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.serializer_class(data=request.data,
+#                                            context={'request': request})
+#         serializer.is_valid(raise_exception=True)
+#         email = serializer.validated_data['email']
+#         token, created = Token.objects.get_or_create(user=email)
+#         return Response({
+#             'token': token.key,
+#             'user_id': email.pk,
+#             'email': email.email
+#         })
         
 
 class admin_view(APIView):
@@ -77,6 +110,7 @@ class admin_view(APIView):
         if serializer.is_valid():
             
             serializer.save()    
+            self.put(request)
 
             return JsonResponse(data=serializer.data, status=201)
 
@@ -103,6 +137,7 @@ class professional_view(APIView):
         for e in models.Professional.objects.all():
             if e.email == request.data.get('email'):
                 email = e.email
+                
 
         professional = models.Professional.objects.get(email=email)
 
@@ -141,7 +176,7 @@ class professional_view(APIView):
         if serializer.is_valid():
             
             serializer.save()
-            
+            self.put(request)
             for e in models.Professional.objects.all():
                 
                 if e.email == request.data.get('email'):
@@ -152,6 +187,7 @@ class professional_view(APIView):
         
             if serializer2.is_valid():
                 serializer2.save()
+                self.put(request)
             
 
             return JsonResponse(data=serializer.data, status=201)
@@ -221,6 +257,7 @@ class patient_view(APIView):
         if serializer.is_valid():
             
             serializer.save()    
+            self.put(request)
 
             return JsonResponse(data=serializer.data, status=201)
 
@@ -275,6 +312,7 @@ class mod_view(APIView):
         if serializer.is_valid():
             
             serializer.save()    
+            self.put(request)
 
             return JsonResponse(data=serializer.data, status=201)
 
