@@ -161,10 +161,18 @@ class professional_view(APIView):
 @api_view(["PUT"])
 def accept_professional(request):
     data = json.loads(json.dumps(request.data))
-    professional = models.Professional.objects.get(email=data.get('email'))
-    professional.is_accepted = True
-    professional.save()
-    return JsonResponse(data='Accepted',status=status.HTTP_202_ACCEPTED, safe=False)
+    try:
+        models.Professional.objects.get(email=data.get('email'))
+
+        professional = models.Professional.objects.get(email=data.get('email'))
+        professional.is_accepted = True
+        professional.save()
+
+        return JsonResponse(data='Aceptado.',status=status.HTTP_202_ACCEPTED, safe=False)
+    
+    except:
+    
+        return JsonResponse(data='No existe el usuario.',status=status.HTTP_202_ACCEPTED, safe=False)
 
 class patient_view(APIView):
     
