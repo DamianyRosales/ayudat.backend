@@ -41,6 +41,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -60,9 +61,17 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
     'users_api',
+    'chat',
 ]
 
+ASGI_APPLICATION = 'backend.asgi.application'
 
+CHANNEL_LAYERS = {
+    'default':{
+        'BACKEND': 'channels.layers.InMemoryChannelLayer', 
+        
+    }
+}
 
 MEDIA_URL = '/ayudat/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")

@@ -26,10 +26,9 @@ from users_api.views import EmailTokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('auth/login/', views.Login.as_view(), name='login'),
     path('api/auth/login/', EmailTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/login/refresh/', TokenRefreshView.as_view(), name='token_refresh_pair'),
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('users_api.urls', namespace='api')),
+
+    path('chat/', include('chat.urls'))
 ]

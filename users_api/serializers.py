@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 from django.core import exceptions
 from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JwtTokenObtainPairSerializer
 from django.contrib.auth import get_user_model
@@ -51,6 +51,7 @@ class AuthCustomTokenSerializer(serializers.Serializer):
             raise exceptions.ValidationError(msg)
 
         attrs['user'] = user
+        attrs['userType'] = user.userType
         return attrs
 
 class AdminSerializer(serializers.ModelSerializer):

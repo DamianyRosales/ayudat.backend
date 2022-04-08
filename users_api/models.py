@@ -63,11 +63,12 @@ class UserBase(AbstractBaseUser):
 
 
 class Admin(UserBase):
+    userType = models.SmallIntegerField(default=0)
     pass
 
 
 class Mod(UserBase):
-
+    userType = models.SmallIntegerField(default=1)
     # Phone number must be entered in the format: '+999999999'. 
     # Up to 15 digits allowed.
     phone_validator = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="")
@@ -77,7 +78,7 @@ class Mod(UserBase):
     objects = UserProfileManager()
 
 class Professional(UserBase):
-    
+    userType = models.SmallIntegerField(default=2)
     # CURP field 18 characters as max length
     curp_validator = RegexValidator(regex=r'^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$', message="")
     curp = models.CharField(max_length=18, unique=True,validators=[curp_validator], blank=True, null=True)
@@ -107,7 +108,7 @@ class Professional(UserBase):
     
 
 class Patient(UserBase):
-
+    userType = models.SmallIntegerField(default=3)
     phoneregex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="")
     phone = models.CharField(db_column='PHONE',validators=[phoneregex], 
                              max_length=17, blank=True, null=True)
