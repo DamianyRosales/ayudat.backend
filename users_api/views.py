@@ -25,6 +25,7 @@ from rest_framework import permissions
 
 # Create your views here.
 
+
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
@@ -79,14 +80,14 @@ class admin_view_post(APIView):
             if e.email == request.data.get('email'):
                 email = e.email
 
-        admin = models.Admin.objects.get(email=email)
+                admin = models.Admin.objects.get(email=email)
 
-        serializer = AdminSerializer(admin, data=data)
+                serializer = AdminSerializer(admin, data=data)
 
-        if serializer.is_valid():
-            serializer.save()
+                if serializer.is_valid():
+                    serializer.save()
 
-            return JsonResponse(data=serializer.data)
+                    return JsonResponse(data=serializer.data)
 
     def post(self,request):
 

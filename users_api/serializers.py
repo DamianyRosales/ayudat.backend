@@ -64,6 +64,7 @@ class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
         fields = '__all__'
+        
     def update(self, instance, validated_data):
         if 'password' in validated_data:
             password = validated_data.pop('password')
