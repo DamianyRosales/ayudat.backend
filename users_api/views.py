@@ -70,6 +70,24 @@ class admin_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
+    def put(self, request, pk=None):
+        data = request.data
+        data = json.loads(json.dumps(request.data))
+        
+        
+        for e in models.Patient.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+        admin = models.Admin.objects.get(email=email)
+
+        serializer = AdminSerializer(admin, data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse(data=serializer.data)
+
     def post(self,request):
 
         data = json.loads(json.dumps(request.data))
@@ -145,6 +163,26 @@ class professional_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
     parser_classes = (MultiPartParser, FormParser)
+
+    def put(self, request, pk=None):
+        data = request.data
+        data = json.loads(json.dumps(request.data))
+        
+        
+        for e in models.Professional.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+                
+
+        professional = models.Professional.objects.get(email=email)
+
+        serializer = ProfessionalSerializer(professional, data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse(data=serializer.data)
+
     def post(self,request):
 
         request2 = {
@@ -279,6 +317,23 @@ class patient_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
+    def put(self, request, pk=None):
+        data = json.loads(json.dumps(request.data))
+        
+        
+        for e in models.Patient.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+        patient = models.Patient.objects.get(email=email)
+
+        serializer = PatientSerializer(patient, data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse(data=serializer.data)
+
     def post(self,request):
 
         data = json.loads(json.dumps(request.data))
@@ -352,6 +407,24 @@ class mod_view_post(APIView):
 
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
+
+    def put(self, request, pk=None):
+        data = request.data
+        data = json.loads(json.dumps(request.data))
+        
+        
+        for e in models.Mod.objects.all():
+            if e.email == request.data.get('email'):
+                email = e.email
+
+        mod = models.Mod.objects.get(email=email)
+
+        serializer = ModSerializer(mod, data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse(data=serializer.data)
     def post(self,request):
 
         data = json.loads(json.dumps(request.data))
