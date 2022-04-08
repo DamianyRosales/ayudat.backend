@@ -40,6 +40,43 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://*',
+    'http://*',
+    'http://localhost:3030',
+    'http://localhost:3000',
+    'http://0.0.0.0:3000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:44944',
+    # 'http://localhost:3030/*',
+    # 'http://localhost:3000/*',
+] # If this is used, then not need to use `CORS_ALLOW_ALL_ORIGINS = True`
+# CORS_ORIGIN_WHITELIST = (
+#   'http://localhost:8000',
+#   'http://localhost:3000',
+# )
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    'https://*',
+    'http://*',
+    'http://localhost:3030',
+    'http://localhost:3000',
+    'http://0.0.0.0:3000',
+    'http://127.0.0.1:3000',
+    # 'http://localhost:3030/*',
+    # 'http://localhost:3000/*',
+]
+
+CORS_ALLOW_METHODS = [
+'DELETE',
+'GET',
+'OPTIONS',
+'PATCH',
+'POST',
+'PUT',
+]
+
 INSTALLED_APPS = [
     'channels',
     'django.contrib.admin',
@@ -88,14 +125,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3030',
-] # If this is used, then not need to use `CORS_ALLOW_ALL_ORIGINS = True`
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    'http://localhost:3030',
-]
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -189,7 +219,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    # 'DEFAULT_PARSER_CLASSES': (
+    #     'rest_framework.parsers.FormParser',
+    #     'rest_framework.parsers.MultiPartParser'
+    #  )
 }
 
 SIMPLE_JWT = {

@@ -11,8 +11,8 @@ import json
 from . import models# Create your views here.
 from rest_framework import permissions
 
-# def lobby(request, room_name):
-#     return JsonResponse(data={'Channel': 'Angel es popo'})
+def lobby(request, room_name):
+    return JsonResponse(data={'Channel': 'Angel es popo'})
 
 class conversation_view(APIView):
     permission_classes = [permissions.AllowAny]
