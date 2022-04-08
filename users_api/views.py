@@ -190,6 +190,8 @@ class professional_view_post(APIView):
             'document1':request.data.get('document1'),
             'document2':request.data.get('document2')
         }
+        
+        request.data._mutable = True
 
         request.data.pop('document1')
         request.data.pop('document2')
