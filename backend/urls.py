@@ -15,14 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
 
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
     TokenRefreshView,
 )
 # from rest_framework.authtoken import views
-from users_api.views import ObtainAuthToken, EmailTokenObtainPairView
+from users_api.views import EmailTokenObtainPairView
 
 # from users_api import views
 

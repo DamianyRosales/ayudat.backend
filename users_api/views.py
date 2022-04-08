@@ -21,35 +21,35 @@ from rest_framework.authtoken.models import Token
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-
+from rest_framework import permissions
 
 # Create your views here.
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
-class ObtainAuthToken(APIView):
-    throttle_classes = ()
-    permission_classes = ()
-    parser_classes = (
-        parsers.FormParser,
-        parsers.MultiPartParser,
-        parsers.JSONParser,
-    )
+# class ObtainAuthToken(APIView):
+#     throttle_classes = ()
+#     permission_classes = ()
+#     parser_classes = (
+#         parsers.FormParser,
+#         parsers.MultiPartParser,
+#         parsers.JSONParser,
+#     )
 
-    renderer_classes = (renderers.JSONRenderer,)
+#     renderer_classes = (renderers.JSONRenderer,)
 
-    def post(self, request):
-        serializer = AuthCustomTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
+#     def post(self, request):
+#         serializer = AuthCustomTokenSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data['user']
+#         token, created = Token.objects.get_or_create(user=user)
 
-        content = {
-            'token': token.key,
-        }
+#         content = {
+#             'token': token.key,
+#         }
 
-        return Response(content)
+#         return Response(content)
 
 # class CustomAuthToken(ObtainAuthToken):
 
@@ -66,8 +66,28 @@ class ObtainAuthToken(APIView):
 #         })
         
 
+class admin_view_post(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    def post(self,request):
+
+        data = json.loads(json.dumps(request.data))
+        
+        serializer = AdminSerializer(data=data)
+
+        if serializer.is_valid():
+            
+            serializer.save()    
+            self.put(request)
+
+            return JsonResponse(data=serializer.data, status=201)
+
+        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class admin_view(APIView):
     
+
     def get(self, request=None, format=None):
 
         admins = models.Admin.objects.all()
@@ -105,16 +125,56 @@ class admin_view(APIView):
         
         
 
+    # def post(self,request):
+
+    #     data = json.loads(json.dumps(request.data))
+        
+    #     serializer = AdminSerializer(data=data)
+
+    #     if serializer.is_valid():
+            
+    #         serializer.save()    
+    #         self.put(request)
+
+    #         return JsonResponse(data=serializer.data, status=201)
+
+    #     return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class professional_view_post(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+    parser_classes = (MultiPartParser, FormParser)
     def post(self,request):
 
+        request2 = {
+            'document1':request.data.get('document1'),
+            'document2':request.data.get('document2')
+        }
+
+        request.data.pop('document1')
+        request.data.pop('document2')
+
         data = json.loads(json.dumps(request.data))
-        
-        serializer = AdminSerializer(data=data)
+
+        serializer = ProfessionalSerializer(data=data)
 
         if serializer.is_valid():
             
-            serializer.save()    
+            serializer.save()
             self.put(request)
+            for e in models.Professional.objects.all():
+                
+                if e.email == request.data.get('email'):
+                    pk = e.id
+                    
+            professional = models.Professional.objects.get(pk=pk)
+            serializer2 = Professional2Serializer(professional, data=request2)
+        
+            if serializer2.is_valid():
+                serializer2.save()
+                self.put(request)
+            
 
             return JsonResponse(data=serializer.data, status=201)
 
@@ -122,6 +182,7 @@ class admin_view(APIView):
 
 
 class professional_view(APIView):
+    
     
     parser_classes = (MultiPartParser, FormParser)
 
@@ -163,40 +224,40 @@ class professional_view(APIView):
         
         
 
-    def post(self,request):
+    # def post(self,request):
 
-        request2 = {
-            'document1':request.data.get('document1'),
-            'document2':request.data.get('document2')
-        }
+    #     request2 = {
+    #         'document1':request.data.get('document1'),
+    #         'document2':request.data.get('document2')
+    #     }
 
-        request.data.pop('document1')
-        request.data.pop('document2')
+    #     request.data.pop('document1')
+    #     request.data.pop('document2')
 
-        data = json.loads(json.dumps(request.data))
+    #     data = json.loads(json.dumps(request.data))
 
-        serializer = ProfessionalSerializer(data=data)
+    #     serializer = ProfessionalSerializer(data=data)
 
-        if serializer.is_valid():
+    #     if serializer.is_valid():
             
-            serializer.save()
-            self.put(request)
-            for e in models.Professional.objects.all():
+    #         serializer.save()
+    #         self.put(request)
+    #         for e in models.Professional.objects.all():
                 
-                if e.email == request.data.get('email'):
-                    pk = e.id
+    #             if e.email == request.data.get('email'):
+    #                 pk = e.id
                     
-            professional = models.Professional.objects.get(pk=pk)
-            serializer2 = Professional2Serializer(professional, data=request2)
+    #         professional = models.Professional.objects.get(pk=pk)
+    #         serializer2 = Professional2Serializer(professional, data=request2)
         
-            if serializer2.is_valid():
-                serializer2.save()
-                self.put(request)
+    #         if serializer2.is_valid():
+    #             serializer2.save()
+    #             self.put(request)
             
 
-            return JsonResponse(data=serializer.data, status=201)
+    #         return JsonResponse(data=serializer.data, status=201)
 
-        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["PUT"])
 def accept_professional(request):
@@ -213,6 +274,26 @@ def accept_professional(request):
     except:
     
         return JsonResponse(data='No existe el usuario.',status=status.HTTP_202_ACCEPTED, safe=False)
+
+class patient_view_post(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    def post(self,request):
+
+        data = json.loads(json.dumps(request.data))
+        
+        serializer = PatientSerializer(data=data)
+
+        if serializer.is_valid():
+            
+            serializer.save()    
+            self.put(request)
+
+            return JsonResponse(data=serializer.data, status=201)
+
+        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class patient_view(APIView):
     
@@ -252,11 +333,30 @@ class patient_view(APIView):
         
         
 
+    # def post(self,request):
+
+    #     data = json.loads(json.dumps(request.data))
+        
+    #     serializer = PatientSerializer(data=data)
+
+    #     if serializer.is_valid():
+            
+    #         serializer.save()    
+    #         self.put(request)
+
+    #         return JsonResponse(data=serializer.data, status=201)
+
+    #     return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class mod_view_post(APIView):
+
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
     def post(self,request):
 
         data = json.loads(json.dumps(request.data))
         
-        serializer = PatientSerializer(data=data)
+        serializer = ModSerializer(data=data)
 
         if serializer.is_valid():
             
@@ -307,19 +407,19 @@ class mod_view(APIView):
         
         
 
-    def post(self,request):
+    # def post(self,request):
 
-        data = json.loads(json.dumps(request.data))
+    #     data = json.loads(json.dumps(request.data))
         
-        serializer = ModSerializer(data=data)
+    #     serializer = ModSerializer(data=data)
 
-        if serializer.is_valid():
+    #     if serializer.is_valid():
             
-            serializer.save()    
-            self.put(request)
+    #         serializer.save()    
+    #         self.put(request)
 
-            return JsonResponse(data=serializer.data, status=201)
+    #         return JsonResponse(data=serializer.data, status=201)
 
-        return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

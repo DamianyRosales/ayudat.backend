@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from backend.settings import PASSWORD_HASHERS
-from users_api.models import Admin, Professional, Patient, Mod, UserBase
+from users_api.models import Admin, Professional, Patient, Mod
 from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate
@@ -18,6 +18,8 @@ class TokenObtainPairSerializer(JwtTokenObtainPairSerializer):
     username_field = get_user_model().USERNAME_FIELD
 
 class AuthCustomTokenSerializer(serializers.Serializer):
+    
+    
     email_or_username = serializers.CharField()
     password = serializers.CharField()
 

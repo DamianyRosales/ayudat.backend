@@ -1,15 +1,7 @@
-from email.policy import EmailPolicy
-from wsgiref.util import setup_testing_defaults
 from django.db import models
 from django.core.validators import RegexValidator
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, User
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-from rest_framework.authtoken.models import Token
-
-from django.conf import settings 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import make_password
 
 class UserProfileManager(BaseUserManager):
