@@ -414,11 +414,11 @@ def accept_professional(request):
         professional.is_accepted = True
         professional.save()
 
-        return JsonResponse(data='Aceptado.',status=status.HTTP_202_ACCEPTED, safe=False)
+        return JsonResponse(data='Aceptado.',status=status.HTTP_200_OK, safe=False)
     
     except:
     
-        return JsonResponse(data='No existe el usuario.',status=status.HTTP_202_ACCEPTED, safe=False)
+        return JsonResponse(data='No existe el usuario.',status=status.HTTP_404_NOT_FOUND, safe=False)
 
 class patient_view_post(APIView):
     permission_classes = [permissions.AllowAny]
