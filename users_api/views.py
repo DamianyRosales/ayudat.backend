@@ -260,21 +260,8 @@ class professional_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
-    def get(self, request=None, format=None):
-
-        for e in models.Professional.objects.all():
-            if e.email == request.data.get('email'):
-                email = e.email
-
-        professional = models.Professional.objects.get(email=email)
-        serializer = ProfessionalSerializer(professional)
-        
-        return JsonResponse(data=serializer.data, safe=False)
-
-class professional_view_post(APIView):
-    permission_classes = [permissions.AllowAny]
-    authentication_classes = []
     parser_classes = (MultiPartParser, FormParser)
+
 
     def put(self, request, pk=None):
         data = request.data
@@ -334,12 +321,18 @@ class professional_view_post(APIView):
 
 
 class professional_view(APIView):
-    
+    # permission_classes = [permissions.AllowAny]
+    # authentication_classes = []
     
     parser_classes = (MultiPartParser, FormParser)
 
-    def get(self, request=None, format=None):
-
+    allowed_methods = ['get', 'post', 'put', 'delete', 'options']
+    # def options(self, request, id):
+    #     response = HttpResponse()
+    #     response['allow'] = ','.join([self.allowed_methods])
+    #     return response
+        
+    def get(self, request, *args, **kwargs):
         professionals = models.Professional.objects.all()
         serializer = ProfessionalSerializer(professionals, many=True)
         

@@ -68,6 +68,28 @@ INSTALLED_APPS = [
 
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "cache-control",
+    "pragma",
+]
 # CORS_ALLOWED_ORIGINS = [
 #     'https://*',
 #     'http://*',
@@ -82,26 +104,26 @@ CORS_ALLOW_CREDENTIALS = True
 # CORS_ORIGIN_WHITELIST = (
 #   'http://localhost:8000',
 #   'http://localhost:3000',
-# )
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    'https://*',
-    'http://*',
-    'http://localhost:3030',
-    'http://localhost:3000',
-    'http://0.0.0.0:3000',
-    'http://127.0.0.1:3000',
-    # 'http://localhost:3030/*',
-    # 'http://localhost:3000/*',
-]
+# # )
 
-CORS_ALLOW_METHODS = [
-'DELETE',
-'GET',
-'OPTIONS',
-'PATCH',
-'POST',
-'PUT',
-]
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#     r"^https://\w+\.example\.com$",
+#     'https://*',
+#     'http://*',
+#     r'http://localhost:3030',
+#     'https://localhost:3000',
+#     'http://0.0.0.0:3000',
+#     'http://127.0.0.1:3000',
+#     # 'http://localhost:3030/*',
+#     # 'http://localhost:3000/*',
+# ]
+
+# CORS_ORIGIN_WHITELIST = [
+# #     'http://localhost',
+# #     'http://localhost',
+# #     'http://localhost:8000',
+# # ]
+
 
 ASGI_APPLICATION = 'backend.asgi.application'
 
@@ -125,6 +147,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 
@@ -222,6 +246,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata'
     # 'DEFAULT_PARSER_CLASSES': (
     #     'rest_framework.parsers.FormParser',
     #     'rest_framework.parsers.MultiPartParser'
