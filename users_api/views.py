@@ -359,6 +359,7 @@ class professional_view(APIView):
             return JsonResponse(data=serializer.data)
 
     def delete(self, request, format=None):
+        print(request)
         for e in models.Professional.objects.all():
             if e.email == request.data.get('email'):
                 email = e.email
