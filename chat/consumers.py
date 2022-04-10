@@ -1,11 +1,43 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 
+from chat.models import Conversation
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    
+    def createConversationID(self, room_name):
+        if not Conversation.objects.filter(conversationID=room_name).exists():
+            Conversation.objects.create(conversationID=room_name)
+
+    def putMessages(self,room_name, message):
+        try:
+            conversation = Conversation.objects.get(conversationID=room_name)
+
+            conversation.messages = conversation.messages + str(message) + '░███§¥╩»»██'
+            conversation.save()
+        except:
+            print('******** Conversation exists')
+
+    def get_messages(self, room_name):
+        try:
+            conversation = Conversation.objects.get(conversationID=room_name)
+            messages = str(conversation.messages).split('░███§¥╩»»██')
+            # {
+                # conversationID: room_name,
+                # messages: messages
+            # }
+            # 
+            print(messages)
+        except:
+            pass
+
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
+
+        await database_sync_to_async(self.createConversationID)(self.room_name)
+
 
         # Join room group
         await self.channel_layer.group_add(
@@ -25,7 +57,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        print("1")
+        # print(text_data_json['content'])
+        
+        await database_sync_to_async(self.putMessages)(self.room_name,text_data_json)
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -37,18 +71,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     # Receive message from room group
-
     async def chat_message(self, event): 
         # message = event['']
-        # print(event)
-        print("2")
+        # print(event['data']['content'])
         # Send message to WebSocket
+        
         await self.send(text_data=json.dumps({
             'type': 'chat_message',
-            'for': event.data['for'],
-            'from': event.data['from'],
-            'content': event.data['content'],
-            'time': event.data['time'],
+            'for': event['data']['for'],
+            'from': event['data']['from'],
+            'content': event['data']['content'],
+            'time': event['data']['time'],
         }))
         
 

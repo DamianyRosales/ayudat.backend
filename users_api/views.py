@@ -167,6 +167,8 @@ class admin_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+
     def put(self, request, pk=None):
         data = request.data
         data = json.loads(json.dumps(request.data))
@@ -202,6 +204,7 @@ class admin_view_post(APIView):
 
 class admin_view(APIView):
     
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def get(self, request=None, format=None):
 
@@ -260,7 +263,7 @@ class professional_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 
     def put(self, request, pk=None):
@@ -324,13 +327,7 @@ class professional_view(APIView):
     # permission_classes = [permissions.AllowAny]
     # authentication_classes = []
     
-    parser_classes = (MultiPartParser, FormParser)
-
-    allowed_methods = ['get', 'post', 'put', 'delete', 'options']
-    # def options(self, request, id):
-    #     response = HttpResponse()
-    #     response['allow'] = ','.join([self.allowed_methods])
-    #     return response
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
         
     def get(self, request, *args, **kwargs):
         professionals = models.Professional.objects.all()
@@ -358,15 +355,19 @@ class professional_view(APIView):
 
             return JsonResponse(data=serializer.data)
 
-    def delete(self, request, format=None):
-        print(request)
-        for e in models.Professional.objects.all():
-            if e.email == request.data.get('email'):
-                email = e.email
+    def delete(self, request):
+        data = json.loads(json.dumps(request.data))
+        try:
+            models.Professional.objects.get(email=data.get('email'))
 
-                professional = models.Professional.objects.get(email=email)
-                professional.delete()
-        return response.Response(status=status.HTTP_204_NO_CONTENT)
+            professional = models.Professional.objects.get(email=data.get('email'))
+            professional.delete()
+
+            return JsonResponse(data='Eliminado.',status=status.HTTP_200_OK, safe=False)
+        
+        except:
+        
+            return JsonResponse(data='No existe el usuario.',status=status.HTTP_404_NOT_FOUND, safe=False)
         
         
 
@@ -421,9 +422,12 @@ def accept_professional(request):
     
         return JsonResponse(data='No existe el usuario.',status=status.HTTP_404_NOT_FOUND, safe=False)
 
+
 class patient_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
+
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def put(self, request, pk=None):
         data = json.loads(json.dumps(request.data))
@@ -460,6 +464,7 @@ class patient_view_post(APIView):
 
 class patient_view(APIView):
     
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     def get(self, request=None, format=None):
 
         patients = models.Patient.objects.all()
@@ -516,6 +521,8 @@ class mod_view_post(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+
     def put(self, request, pk=None):
         data = request.data
         data = json.loads(json.dumps(request.data))
@@ -551,6 +558,8 @@ class mod_view_post(APIView):
 
 class mod_view(APIView):
     
+
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     def get(self, request=None, format=None):
 
         patients = models.Mod.objects.all()
