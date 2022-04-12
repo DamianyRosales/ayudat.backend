@@ -482,6 +482,7 @@ class patient_view_post(APIView):
             # token = TokenObtainPairView.post(self,request=logindata)
             # print(token)
             token = requests.post(endpoint, data=logindata)
+            print(token)
             newData = {"data": serializer.data, "token": token}
             # print(newData)
             return JsonResponse(data=newData, status=201)
