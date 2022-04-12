@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from users_api import serializers
 from .serializers import ConversationSerializer
 from rest_framework import status
+from sqlite3 import Cursor
 
 import json
 
@@ -23,8 +24,7 @@ class conversation_view(APIView):
         conversation = models.Conversation.objects.get(conversationID=conversationID)
         serializer = ConversationSerializer(conversation, many=False)
         return JsonResponse(data=serializer.data, safe = False)
-
-
+        
     def put(self, request):
         data = json.loads(json.dumps(request.data))
 

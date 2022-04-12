@@ -5,7 +5,7 @@ from users_api.serializers import (
     )
 from . import models
 from rest_framework.views import APIView
-import json
+import json, requests
 from rest_framework import status
 from rest_framework import response
 
@@ -35,9 +35,14 @@ from rest_framework_simplejwt.authentication import AUTH_HEADER_TYPES
 
 from rest_framework import generics, status
 
+import users_api
+
+
+
 class TokenViewBase(generics.GenericAPIView):
     permission_classes = ()
     authentication_classes = ()
+    
 
     serializer_class = None
     _serializer_class = ""
@@ -291,7 +296,7 @@ class professional_view_post(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return JsonResponse(data=serializer.data)
+            return JsonResponse(data=serializer.data, status=status.HTTP_201_CREATED)
 
     def post(self,request):
 
@@ -309,6 +314,7 @@ class professional_view_post(APIView):
 
         serializer = ProfessionalSerializer(data=data)
 
+
         if serializer.is_valid():
             
             serializer.save()
@@ -320,10 +326,12 @@ class professional_view_post(APIView):
                     
             professional = models.Professional.objects.get(pk=pk)
             serializer2 = Professional2Serializer(professional, data=request2)
-        
+
             if serializer2.is_valid():
                 serializer2.save()
                 self.put(request)
+            
+
             
 
             return JsonResponse(data=serializer.data, status=201)
@@ -462,10 +470,21 @@ class patient_view_post(APIView):
 
         if serializer.is_valid():
             
+            
             serializer.save()    
             self.put(request)
-
-            return JsonResponse(data=serializer.data, status=201)
+            endpoint = 'https://ayudat-backend.herokuapp.com/api/auth/login/'
+            logindata = {
+                "email": data.get('email'),
+                "password": data.get('password')
+            }
+            # print(data.get('email'), data.get('password'))
+            # token = TokenObtainPairView.post(self,request=logindata)
+            # print(token)
+            token = requests.post(endpoint, data=logindata)
+            newData = {"data": serializer.data, "token": token}
+            # print(newData)
+            return JsonResponse(data=newData, status=201)
 
         return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
