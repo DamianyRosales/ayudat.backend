@@ -482,11 +482,10 @@ class patient_view_post(APIView):
             # token = TokenObtainPairView.post(self,request=logindata)
             # print(token)
             token = requests.post(endpoint, data=logindata)
-            print(token)
-            newData = {"data": serializer.data, "token": token}
+            print(token.json())
+            newData = {"data": serializer.data, "token": token.json()}
             # print(newData)
             return JsonResponse(data=newData, status=201)
-
         return JsonResponse(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
