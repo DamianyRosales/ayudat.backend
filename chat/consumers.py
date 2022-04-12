@@ -76,6 +76,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'data': text_data_json
             }
         )
+        # print(text_data_json)
 
     # Receive message from room group
     async def chat_message(self, event):
